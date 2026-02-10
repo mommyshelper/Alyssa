@@ -1,0 +1,108 @@
+echo "# Alyssa" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/mommyshelper/Alyssa.git
+git push -u origin main
+git remote add origin https://github.com/mommyshelper/Alyssa.git
+git branch -M main
+git push -u origin main// ADHD MOM HELPER – FULL FEATURED VERSION
+// Features: Time backtracking, baby cues, meal ideas, calm mode, survival guide, packing lists, mock schedule, chat support
+// Added features: reminders, postpartum depression guide, suicide hotline, crockpot meal plan, organization tools, self massage, alarm clock, calculator, clothing sizes & tracking, almanac calendar, food preferences
+
+import { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, FlatList, ScrollView } from "react-native";
+
+export default function App() {
+  const [mode, setMode] = useState("time"); // time | baby | food | calm | survival | chat | reminders | ppd | crockpot | organization | calculator | calendar
+  const [leaveTime, setLeaveTime] = useState("08:00");
+  const [tasks, setTasks] = useState([]);
+  const [taskName, setTaskName] = useState("");
+  const [minutes, setMinutes] = useState("");
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
+  const [expandedSections, setExpandedSections] = useState({});
+
+  // New: Reminders
+  const [reminders, setReminders] = useState(["Milk", "Formula", "Diapers", "Homework"]);
+
+  // New: Crockpot meals
+  const crockpotMeals = ["Chicken stew", "Beef chili", "Vegetable curry", "Pulled pork"];
+
+  // New: Organization tips
+  const organizationTips = [
+    "Break home into zones",
+    "15 min tidy sessions",
+    "Label bins and drawers",
+    "Use checklists for tasks"
+  ];
+
+  // New: Postpartum depression guide
+  const ppdGuide = [
+    "Sunshine - get outside daily",
+    "Good food - eat balanced meals",
+    "Fun - schedule enjoyable activities",
+    "Friends - stay socially connected",
+    "Water - drink enough each day",
+    "Suicide hotline (USA): 988 - 24/7 support"
+  ];
+
+  // New: Child clothing sizes & age guide (simplified example)
+  const clothingSizes = [
+    {age: 'Newborn', size: 'NB'},
+    {age: '0-3 months', size: '0-3M'},
+    {age: '3-6 months', size: '3-6M'},
+    {age: '6-9 months', size: '6-9M'},
+    {age: '9-12 months', size: '9-12M'},
+    {age: '12-18 months', size: '12-18M'},
+    {age: '18-24 months', size: '18-24M'}
+  ];
+
+  const toggleSection = (key) => {
+    setExpandedSections({ ...expandedSections, [key]: !expandedSections[key] });
+  };
+
+  const addTask = () => {
+    if (!taskName || !minutes) return;
+    setTasks([...tasks, { id: Date.now(), name: taskName, minutes: Number(minutes) }]);
+    setTaskName("");
+    setMinutes("");
+  };
+
+  const totalMinutes = tasks.reduce((sum, t) => sum + t.minutes, 0);
+  const getStartTime = () => {
+    const [h, m] = leaveTime.split(":").map(Number);
+    const leave = new Date();
+    leave.setHours(h, m, 0, 0);
+    leave.setMinutes(leave.getMinutes() - totalMinutes);
+    return leave.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const handleChat = () => {
+    if (!chatInput) return;
+    const response = `You said: ${chatInput}. You're not alone; take a breath.`; // Placeholder for chatbot logic
+    setChatHistory([...chatHistory, { id: Date.now(), user: chatInput, bot: response }]);
+    setChatInput("");
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Bottom Navigation */}
+      <ScrollView horizontal style={{ flexDirection: 'row', padding: 10, backgroundColor: '#eee' }}>
+        {['time','baby','food','calm','survival','chat','reminders','ppd','crockpot','organization','calculator','calendar'].map(m => (
+          <TouchableOpacity key={m} onPress={()=>setMode(m)} style={{ marginRight:10 }}>
+            <Text style={{ color: mode===m?'blue':'black' }}>{m.charAt(0).toUpperCase()+m.slice(1)}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <ScrollView style={{ flex:1, padding:20 }}>
+        {mode === 'reminders' && (
+          <View>
+            <Text style={{ fontSize:18, fontWeight:'bold' }}>Reminders:</Text>
+            {reminders.map((r,i)=><Text key={i}>• {r}</Text>)}
+          </View>
+        )}
+
+        {mode === 'ppd' && (
